@@ -47,7 +47,21 @@ class Buku extends \yii\db\ActiveRecord
     {
         return 'buku';
     }
+ 
+    public static function getGrafikList()
+    {
+        $data = [];
+        foreach (static::find()->all() as $buku) {
+            $data[] = [StringHelper::truncate($buku->nama, 20), (int) $kabkota->getManyBuku()->count()];
+        }
+        return $data;
+    }
 
+    public static function getCount()
+    {
+        return static::find()->count();
+    }
+    
     /**
      * {@inheritdoc}
      */

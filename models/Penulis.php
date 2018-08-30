@@ -62,4 +62,27 @@ class Penulis extends \yii\db\ActiveRecord
         ->all();
 
     }
+    
+    //Untuk menampilkan jumlah buku yg berkaitan dgn form view masing-masing
+     public function getJumlahBuku()
+    {
+        return Buku::find()
+        ->andwhere(['id_penulis' => $this->id])
+        ->orderBy(['nama' => SORT_ASC])
+        -> count();
+    }
+
+    public function getManyBuku()
+    {
+        return $this->hasMany(Buku::class, ['id_penulis' => 'id']);
+    }
+
+    public static function getGrafikList()
+    {
+        $data = [];
+        foreach (static::find()->all() as $penulis) {
+            $data[] = [$penulis->nama, (int) $penulis->getManyBuku()->count()];
+        }
+        return $data;
+    }
 }

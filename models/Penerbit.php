@@ -53,4 +53,40 @@ class Penerbit extends \yii\db\ActiveRecord
     {
         return \yii\helpers\ArrayHelper::map(self::find()->all(), 'id', 'nama');
     }
+
+     //Untuk menampilkan jumlah buku yg berkaitan dgn form view masing-masing
+     public function getJumlahBuku()
+    {
+        return Buku::find()
+        ->andwhere(['id_penerbit' => $this->id])
+        ->orderBy(['nama' => SORT_ASC])
+        -> count();
+    }
+
+     //Untuk menampilkan data buku yg berkaitan dengan form view masing-masing
+    public function findAllBuku() {
+        return Buku::find()->andwhere(['id_penerbit' => $this->id])
+        ->orderBy(['nama' => SORT_ASC])
+        ->all();
+
+    }
+
+     public static function getPenerbitCount()
+    {
+        return static::find()->count();
+    }
+
+    public function getManyBuku()
+    {
+        return $this->hasMany(Buku::class, ['id_penerbit' => 'id']);
+    }
+
+    public static function getGrafikList()
+    {
+        $data = [];
+        foreach (static::find()->all() as $penerbit) {
+            $data[] = [$penerbit->nama, (int) $penerbit->getManyBuku()->count()];
+        }
+        return $data;
+    }
 }

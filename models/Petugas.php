@@ -48,4 +48,10 @@ class Petugas extends \yii\db\ActiveRecord
             'email' => 'Email',
         ];
     }
+
+     //Untuk menampilkan banyaknya Peminjaman
+     public static function getPetugasCount()
+    {
+        return static::find()->count();
+    }
 }

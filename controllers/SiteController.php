@@ -125,4 +125,10 @@ class SiteController extends Controller
     {
         return $this->render('about');
     }
+
+    // Custom Sendiri untuk dashboard
+    public function actionDashboard()
+    {
+        return $this->render('dashboard');
+    }
 }
