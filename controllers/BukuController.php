@@ -10,6 +10,11 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 use yii\web\ArrayHelper;
+use PhpOffice\PhpWord\IOfactory;
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\Shared\Converter;
+use PhpOffice\PhpSpreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 /**
  * BukuController implements the CRUD actions for Buku model.
@@ -185,4 +190,117 @@ class BukuController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+     //Untuk Export Buku ke word
+    public function actionJadwalPl()
+    {
+        $phpWord = new phpWord();
+        $section = $phpWord->addSection(
+            [
+                'marginTop' => Converter::cmTotwip(1.80),
+                'marginBottom' => Converter::cmTotwip(1.80),
+                'marginLeft' => Converter::cmTotwip(1.2),
+                'marginRight' => Converter::cmTotwip(1.6),
+            ]
+        );
+
+        $fontStyle = [
+            'underline' => 'dash',
+            'bold' => true,
+            'italic' => true,
+        ];
+        $paragraphCenter =[
+        'alignment' =>'center',
+        ];
+
+        $headerStyle = [
+            'bold' => true,
+        ];
+
+        $section->addText(
+            'Daftar Buku',
+            $headerStyle,
+            $fontStyle,
+            $paragraphCenter
+        );
+
+        $section->addText(
+            'RINCIAN DARI TABEL BUKU',
+            $headerStyle,
+            $paragraphCenter
+        );
+
+        $section->addTextBreak(1);
+
+        $judul = $section->addTextRun($paragraphCenter);
+
+        $judul->addText('Keterangan dari ', $fontStyle);
+        $judul->addText('Tabel ', ['italic' =>true]);
+        $judul->addText('Buku ', ['bold' =>true]);
+
+        $table = $section->addTable([
+            'alignment' => 'center',
+            'bgColor' => 6,
+            'borderSize' => 6,
+        ]);
+        $table->addRow(null);
+        $table->addCell(500)->addText('NO', $headerStyle, $paragraphCenter);
+        $table->addCell(5000)->addText('Nama Buku', $headerStyle, $paragraphCenter);
+        $table->addCell(5000)->addText('Tahun Terbit', $headerStyle, $paragraphCenter);
+        $table->addCell(200)->addText('Penulis', $headerStyle, $paragraphCenter);
+        $table->addCell(200)->addText('Penerbit', $headerStyle, $paragraphCenter);
+        $table->addCell(200)->addText('Kategori', $headerStyle, $paragraphCenter);
+        // $table->addCell(200)->addText('Sinopsis', $headerStyle, $paragraphCenter);
+
+        $semuaBuku = Buku::find()->all();
+        $nomor = 1;
+        foreach ($semuaBuku as $buku) {
+        $table->addRow(null);
+        $table->addCell(500)->addText($nomor++, null, $headerStyle, $paragraphCenter);
+        $table->addCell(5000)->addText($buku->nama, null);
+        $table->addCell(5000)->addText($buku->tahun_terbit, null, $paragraphCenter);
+        $table->addCell(5000)->addText($buku->penulis->nama, null, $paragraphCenter);
+        $table->addCell(5000)->addText($buku->penerbit->nama, null, $paragraphCenter);
+        $table->addCell(5000)->addText($buku->kategori->nama, null, $paragraphCenter);
+        // $table->addCell(5000)->addText($buku->sinopsis, null);
+
+      }
+        $filename = time() . 'Jadwal-PL.docx';
+        $path = 'exportwordbuku/' . $filename;
+        $xmlWriter = IOfactory::createWriter($phpWord, 'Word2007');
+        $xmlWriter -> save($path);
+        return $this -> redirect($path);
+    }
+
+    //Untuk Export file ke Excel
+    public function actionExportExcel() {
+     
+    $spreadsheet = new PhpSpreadsheet\Spreadsheet();
+    $worksheet = $spreadsheet->getActiveSheet();
+     
+    //Menggunakan Model
+
+    $database = Buku::find()
+    ->select('nama, tahun_terbit, sinopsis')
+    ->all();
+    //A1 untuk kolom A ke 1, dan B1 untuk kolom B ke 1
+    $worksheet->setCellValue('A1', 'Judul Buku');
+    $worksheet->setCellValue('B1', 'Tahun Terbit');
+    $worksheet->setCellValue('C1', 'Sinopsis');
+
+     
+    //JIka menggunakan DAO , gunakan QueryAll()
+     
+    $database = \yii\helpers\ArrayHelper::toArray($database);
+    $worksheet->fromArray($database, null, 'A2');
+     
+    $writer = new Xlsx($spreadsheet);
+     
+    header('Content-Type: application/vnd.ms-excel');
+    header('Content-Disposition: attachment;filename="download.xlsx"');
+    header('Cache-Control: max-age=0');
+    $writer->save('php://output');
+     
+    }
+
 }

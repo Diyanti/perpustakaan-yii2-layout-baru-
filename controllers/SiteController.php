@@ -9,6 +9,8 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use Mpdf\Mpdf;
+use app\models\Buku;
 
 class SiteController extends Controller
 {
@@ -61,7 +63,13 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        // return $this->render('dashboard');
+         if (!Yii::$app->user->isGuest)
+        {
+            return $this->redirect(['site/dashboard']);
+        } else {
+            return $this->redirect(['site/login']);
+        }
     }
 
     /**
@@ -131,4 +139,15 @@ class SiteController extends Controller
     {
         return $this->render('dashboard');
     }
+
+     //Untuk Export ke PDF
+    public function actionExportPdf() 
+   {
+         $this->layout='main1';
+         $model = Buku::find()->All();
+         $mpdf=new mPDF();
+         $mpdf->WriteHTML($this->renderPartial('template',['model'=>$model]));
+         $mpdf->Output('DataBuku.pdf', 'D');
+         exit;
+   }
 }

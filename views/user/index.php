@@ -27,9 +27,17 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'username',
-            'password',
+            // 'id',
+            // 'username',
+            [
+               'attribute' =>'username',
+               'headerOptions' => ['style' => 'text-align:center;'],
+           ],
+            // 'password',
+           [
+               'attribute' =>'password',
+               'headerOptions' => ['style' => 'text-align:center;'],
+           ],
             // 'id_anggota',
             [  
                 'attribute' => 'id_anggota',
@@ -39,7 +47,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     //return $data->getPenulis();
                     // Cara 2 Pemanggil id_*** menjadi nama.
                     return @$data->anggota->nama;
-                }
+                },
+                'filter' => Anggota::getList(),
+                'headerOptions' => ['style' => 'text-align:center;'],
+                'contentOptions' => ['style' => 'text-align:center'],
             ],
             // 'id_petugas',
             [  
@@ -50,7 +61,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     //return $data->getPenulis();
                     // Cara 2 Pemanggil id_*** menjadi nama.
                     return @$data->petugas->nama;
-                }
+                },
+                // 'filter' => Petugas::getList(),
+                'headerOptions' => ['style' => 'text-align:center;'],
+                'contentOptions' => ['style' => 'text-align:center'],
             ],
             //'id_user_role',
             //'status',

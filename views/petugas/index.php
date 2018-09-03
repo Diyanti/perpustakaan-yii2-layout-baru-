@@ -10,28 +10,46 @@ use yii\grid\GridView;
 $this->title = 'Petugas';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="petugas-index">
-
+<div class="petugas-index box box-primary">
+  
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
+    <div class="box-header">
     <p>
-        <?= Html::a('Tambah Petugas', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('<i class="fa fa-plus"></i> Tambah Petugas', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-
+  </div>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'nama',
-            'alamat',
-            'telepon',
-            'email:email',
+            // 'id',
+            // 'nama',
+             [
+               'attribute' =>'nama',
+               'headerOptions' => ['style' => 'text-align:center;'],
+             ],
+            // 'alamat:ntext',
+             [
+               'attribute' =>'alamat',
+               'headerOptions' => ['style' => 'text-align:center; width: 100px'],
+           ],
+            // 'telepon',
+           [
+               'attribute' =>'telepon',
+               'headerOptions' => ['style' => 'text-align:center; width: 100px'],
+           ],
+            // 'email:email',
+           [
+               'attribute' =>'email',
+               'headerOptions' => ['style' => 'text-align:center; width: 100px'],
+           ],
+
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
 </div>
+

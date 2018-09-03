@@ -10,25 +10,29 @@ use yii\grid\GridView;
 $this->title = 'Kategoris';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="kategori-index">
+<div class="kategori-index box box-primary">
 
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
+    <div class="box-header">
     <p>
-        <?= Html::a('Tambah Kategori', ['create'], ['class' => 'btn btn-success']) ?>
+         <?= Html::a('<i class="fa fa-plus"></i> Tambah Kategori', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-
+    </div>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'nama',
+            // 'id',
+            // 'nama',
+             [
+               'attribute' =>'nama',
+               'headerOptions' => ['style' => 'text-align:center;'],
+             ],
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
-</div>
+    </div>

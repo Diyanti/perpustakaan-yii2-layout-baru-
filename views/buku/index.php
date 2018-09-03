@@ -6,22 +6,23 @@ use app\models\Kategori;
 use app\models\Penerbit;
 use app\models\Penulis;
 
-
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\BukuSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Bukus';
+$this->title = 'Buku';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="buku-index">
+<div class="buku-index box box-primary">
 
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a('Tambah Buku', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    <div class="box-header">
+        <?= Html::a('<i class="fa fa-plus"></i> Tambah Buku', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('<i class="fa fa-print"></i> Export word', ['buku/jadwal-pl'], ['class' => 'btn btn-primary btn-flat']) ?>
+        <?= Html::a('<i class="fa fa-print"></i> Export Excel', ['buku/export-excel'], ['class' => 'btn btn-success']) ?>
+         <?= Html::a('<i class="fa fa-print"></i> Export PDF', ['site/export-pdf'], ['class' => 'btn btn-danger']) ?>
+    </div>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -39,49 +40,70 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'tahun_terbit',
             [
                'attribute' =>'tahun_terbit',
-               'headerOptions' => ['style' => 'text-align:center;'],
+               'label' => 'Tahun<br>Terbit',
+               'encodeLabel' =>false,
+               'headerOptions' => ['style' => 'text-align:center; width: 80px'],
+               'contentOptions' => ['style' => 'text-align:center'],
            ],
+           
            // 'id_penulis',
            [  
                 'attribute' => 'id_penulis',
+                'label' => 'Penulis',
                 'value' => function($data)
                 {
                     // Cara 1 Pemanggil id_*** menjadi nama.
                     //return $data->getPenulis();
                     // Cara 2 Pemanggil id_*** menjadi nama.
-                    return $data->penulis->nama;
-                }
+                    return @$data->penulis->nama;
+                },
+                'filter' => Penulis::getList(),
+                'headerOptions' => ['style' => 'text-align:center; width: 80px'],
+                'contentOptions' => ['style' => 'text-align:center'],
             ],
 
             // 'id_penerbit',
              [  
                 'attribute' => 'id_penerbit',
+                'label' => 'Penerbit',
                 'value' => function($data)
                 {
                     // Cara 1 Pemanggil id_*** menjadi nama.
                     //return $data->getPenulis();
                     // Cara 2 Pemanggil id_*** menjadi nama.
-                    return $data->penerbit->nama;
-                }
+                    return @$data->penerbit->nama;
+                },
+                'filter' => Penerbit::getList(),
+                'headerOptions' => ['style' => 'text-align:center; width: 80px'],
+                'contentOptions' => ['style' => 'text-align:center'],
             ],
 
             // 'id_kategori',
              [  
                 'attribute' => 'id_kategori',
+                'label' => 'Kategori',
                 'value' => function($data)
                 {
                     // Cara 1 Pemanggil id_*** menjadi nama.
                     //return $data->getPenulis();
                     // Cara 2 Pemanggil id_*** menjadi nama.
-                    return $data->kategori->nama;
-                }
+                    return @$data->kategori->nama;
+                },
+                'filter' => Kategori::getList(),
+                'headerOptions' => ['style' => 'text-align:center; width: 80px'],
+                'contentOptions' => ['style' => 'text-align:center'],
             ],
 
-            'sinopsis:ntext',
+            // 'sinopsis:ntext',
+            [
+               'attribute' =>'sinopsis',
+               'headerOptions' => ['style' => 'text-align:center;'],
+           ],
             // 'sampul',
             [
               'attribute' => 'sampul',
               'headerOptions' => ['style' => 'text-align:center;'],
+              'contentOptions' => ['style' => 'text-align:center'],
               'format' =>'raw',
               'value' => function ($model){
                 if ($model->sampul != '') {
@@ -91,7 +113,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
               },
             ],
-            
+         
+
             // 'berkas',
             [
                 'attribute' => 'berkas',
@@ -108,5 +131,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
-</div>
+    ]); 
+    ?>
+    </div>
+    
