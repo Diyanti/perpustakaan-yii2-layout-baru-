@@ -10,18 +10,18 @@ use app\models\Anggota;
 /* @var $searchModel app\models\PeminjamanSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Peminjamen';
+$this->title = 'Peminjaman';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="peminjaman-index box box-primary">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
   <div class="box-header">
+    <h3><?= Html::encode($this->title) ?></h3>
+    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+  </div>
     <p>
         <?= Html::a('<i class="fa fa-plus"></i> Tambah Peminjaman', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-  </div>
+    <div class="box-body"> 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return @$data->buku->nama;
                 },
                 'filter' => Buku::getList(),
-                'headerOptions' => ['style' => 'text-align:center; width: 150px'],
+                'headerOptions' => ['style' => 'text-align:center; width: 250px'],
                 'contentOptions' => ['style' => 'text-align:center'],
             ],
             // 'id_anggota',
@@ -81,6 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
+</div>
 </div>
 
 <?php 

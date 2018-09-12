@@ -242,6 +242,7 @@ class BukuController extends Controller
             'alignment' => 'center',
             'bgColor' => 6,
             'borderSize' => 6,
+            
         ]);
         $table->addRow(null);
         $table->addCell(500)->addText('NO', $headerStyle, $paragraphCenter);
@@ -272,7 +273,7 @@ class BukuController extends Controller
         return $this -> redirect($path);
     }
 
-    //Untuk Export file ke Excel
+     //Untuk Export file ke Excel
     public function actionExportExcel() {
      
     $spreadsheet = new PhpSpreadsheet\Spreadsheet();

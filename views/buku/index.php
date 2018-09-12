@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -14,16 +14,18 @@ $this->title = 'Buku';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="buku-index box box-primary">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+  
     <div class="box-header">
+      <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
+    </div>
+    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    
         <?= Html::a('<i class="fa fa-plus"></i> Tambah Buku', ['create'], ['class' => 'btn btn-success']) ?>
         <?= Html::a('<i class="fa fa-print"></i> Export word', ['buku/jadwal-pl'], ['class' => 'btn btn-primary btn-flat']) ?>
         <?= Html::a('<i class="fa fa-print"></i> Export Excel', ['buku/export-excel'], ['class' => 'btn btn-success']) ?>
          <?= Html::a('<i class="fa fa-print"></i> Export PDF', ['site/export-pdf'], ['class' => 'btn btn-danger']) ?>
-    </div>
-
+   
+   <div class="box-body"> 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -133,5 +135,6 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); 
     ?>
-    </div>
+  </div><!-- .box-body -->
+</div><!-- .box primary-->
     

@@ -6,6 +6,8 @@ use app\models\Anggota;
 use app\models\Penerbit;
 use app\models\Penulis;
 use app\models\Kategori;
+use app\models\User;
+use app\models\Peminjaman;
 use miloschuman\highcharts\Highcharts;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -13,18 +15,18 @@ use yii\helpers\Url;
 /* @var $this yii\web\View */
 $this->title = 'Perpustakaan';
 ?>
-
+<!-- Dashboard Admin -->
+<?php if (Yii::$app->user->identity->id_user_role == 1): ?>
 <div class="row">
 <div class="col-lg-3 col-xs-6">
     <!-- small box -->
     <div class="small-box bg-green">
         <div class="inner">
             <p>Jumlah Buku</p>
-
             <h3><?= Yii::$app->formatter->asInteger(Buku::getCount()); ?></h3>
         </div>
         <div class="icon">
-            <i class="fa fa-times"></i>
+            <i class="fa fa-book"></i>
         </div>
         <a href="<?=Url::to(['buku/index']);?>" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
     </div>
@@ -32,7 +34,7 @@ $this->title = 'Perpustakaan';
 
 <!-- ./col -->
 <div class="col-lg-3 col-xs-6">
-    <!-- small box -->
+    <!-- small box --> 
     <div class="small-box bg-purple">
         <div class="inner">
             <p>Jumlah Penerbit</p>
@@ -56,12 +58,11 @@ $this->title = 'Perpustakaan';
                 <h3><?= Yii::$app->formatter->asInteger(Kategori::getKategoriCount()); ?></h3>
             </div>
             <div class="icon">
-                <i class="fa fa-warning"></i>
+                <i class="fa fa-server"></i>
             </div>
             <a href="<?=Url::to(['kategori/index']);?>" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
     </div>
-
     <div class="col-lg-3 col-xs-6">
         <!-- small box -->
         <div class="small-box bg-red">
@@ -71,7 +72,7 @@ $this->title = 'Perpustakaan';
                 <h3><?= Yii::$app->formatter->asInteger(Petugas::getPetugasCount()); ?></h3>
             </div>
             <div class="icon">
-                <i class="fa fa-warning"></i>
+                <i class="fa fa-user"></i>
             </div>
             <a href="<?=Url::to(['petugas/index']);?>" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
         </div>
@@ -80,8 +81,7 @@ $this->title = 'Perpustakaan';
 <br>
 <br>
 
-<!-- Chart Bar -->
-
+<!-- Chart Bar --> 
 <div class="row">
     <div class="col-sm-6">
         <div class="box box-primary">
@@ -101,7 +101,7 @@ $this->title = 'Perpustakaan';
                         ],
                         'series' => [
                             [
-                                'type' => 'pie',
+                                'type' => 'bar',
                                 'name' => 'Buku',
                                 'data' => Kategori::getGrafikList(),
                             ],
@@ -111,7 +111,6 @@ $this->title = 'Perpustakaan';
             </div>
            </div>
         </div>
-
         <div class="row">
             <div class="col-sm-6">
                 <div class="box box-primary">
@@ -185,4 +184,109 @@ $this->title = 'Perpustakaan';
 
                 </div>
             </div>
+        </div>
+    <?php endif ?>
+
+    <!-- Dashboard Anggota -->
+<?php if (Yii::$app->user->identity->id_user_role == 2): ?>
+<?php $this->title = 'Perpustakaan'; ?>
+
+<div class="row">
+
+    <?php foreach (Buku::find()->all() as $buku) {?> 
+        <!-- Kolom box mulai -->
+        <div class="col-md-4">
+
+            <!-- Box mulai -->
+            <div class="box box-widget">
+
+                <div class="box-header with-border">
+                    <div class="user-block">
+                        <img class="img-circle" src="<?= Yii::getAlias('@web').'/images/P2.jpg'; ?>" alt="User Image">
+                        <span class="username"><?= Html::a($buku->nama, ['buku/view', 'id' => $buku->id]); ?></span>
+                        <span class="description"> Di Terbitkan : Tahun <?= $buku->tahun_terbit; ?></span>
+                    </div>
+                    <div class="box-tools">
+                        <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="Mark as read"><i class="fa fa-circle-o"></i></button>
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                    </div>
+                </div>
+
+                <div class="box-body">
+                    <img class="img-responsive pad" src="<?= Yii::$app->request->baseUrl.'/upload/'.$buku['sampul']; ?>" alt="Photo">
+                    <p>Sinopsis : <?= substr($buku->sinopsis,0,120);?> ...</p>
+                    <?= Html::a("<i class='fa fa-eye'> Detail Buku</i>",["buku/view","id"=>$buku->id],['class' => 'btn btn-default']) ?>
+                    <?= Html::a('<i class="fa fa-file"> Pinjam Buku</i>', ['#', 'id' => $buku->id], [
+                        'class' => 'btn btn-primary',
+                        'data' => [
+                            'confirm' => 'Apa anda yakin ingin meminjam buku ini?',
+                            'method' => 'post',
+                        ],
+                    ]) ?>
+                    <!-- <span class="pull-right text-muted">127 Peminjam - 3 Komentar</span> -->
+                </div>
+
+            </div>
+            <!-- Box selesai -->
+
+        </div>
+        <!-- Kolom box selesai -->  
+    <?php
+        }
+    ?>
+
 </div>
+<?php endif ?>
+
+<!-- Dashboard Petugas -->
+<?php if (Yii::$app->user->identity->id_user_role == 3): ?>
+<?php $this->title = 'Perpustakaan'; ?>
+
+<div class="row">
+
+    <?php foreach (Buku::find()->all() as $buku) {?> 
+        <!-- Kolom box mulai -->
+        <div class="col-md-4">
+
+            <!-- Box mulai -->
+            <div class="box box-widget">
+
+                <div class="box-header with-border">
+                    <div class="user-block">
+                        <img class="img-circle" src="<?= Yii::getAlias('@web').'/images/P2.jpg'; ?>" alt="User Image">
+                        <span class="username"><?= Html::a($buku->nama, ['buku/view', 'id' => $buku->id]); ?></span>
+                        <span class="description"> Di Terbitkan : Tahun <?= $buku->tahun_terbit; ?></span>
+                    </div>
+                    <div class="box-tools">
+                        <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="Mark as read"><i class="fa fa-circle-o"></i></button>
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                    </div>
+                </div>
+
+                <div class="box-body">
+                    <img class="img-responsive pad" src="<?= Yii::$app->request->baseUrl.'/upload/'.$buku['sampul']; ?>" alt="Photo">
+                    <p>Sinopsis : <?= substr($buku->sinopsis,0,120);?> ...</p>
+                    <?= Html::a("<i class='fa fa-eye'> Detail Buku</i>",["buku/view","id"=>$buku->id],['class' => 'btn btn-default']) ?>
+                    <?= Html::a('<i class="fa fa-file"> Pinjam Buku</i>', ['#', 'id' => $buku->id], [
+                        'class' => 'btn btn-primary',
+                        'data' => [
+                            'confirm' => 'Apa anda yakin ingin meminjam buku ini?',
+                            'method' => 'post',
+                        ],
+                    ]) ?>
+                    <!-- <span class="pull-right text-muted">127 Peminjam - 3 Komentar</span> -->
+                </div>
+
+            </div>
+            <!-- Box selesai -->
+
+        </div>
+        <!-- Kolom box selesai -->  
+    <?php
+        }
+    ?>
+
+</div>
+<?php endif ?>

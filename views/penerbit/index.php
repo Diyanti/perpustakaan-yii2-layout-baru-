@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\PenerbitSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Penerbits';
+$this->title = 'Penerbit';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="penerbit-index box box-primary">
@@ -46,8 +46,8 @@ $this->params['breadcrumbs'][] = $this->title;
                'attribute' =>'email',
                'headerOptions' => ['style' => 'text-align:center; width: 100px'],
            ],
-
-            ['class' => 'yii\grid\ActionColumn'],
+           
+           ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
   </div>

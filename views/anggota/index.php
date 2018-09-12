@@ -17,6 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box-header">
     <p>
         <?= Html::a('<i class="fa fa-plus"></i> Tambah Anggota', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('<i class="fa fa-print"></i> Export word', ['anggota/export-word'], ['class' => 'btn btn-primary btn-flat']) ?>
     </p>
   </div>
 
@@ -35,17 +36,17 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'alamat:ntext',
              [
                'attribute' =>'alamat',
-               'headerOptions' => ['style' => 'text-align:center; width: 100px'],
+               'headerOptions' => ['style' => 'text-align:center; width: 120px'],
            ],
             // 'telepon',
            [
                'attribute' =>'telepon',
-               'headerOptions' => ['style' => 'text-align:center; width: 100px'],
+               'headerOptions' => ['style' => 'text-align:center; width: 120px'],
            ],
             // 'email:email',
            [
                'attribute' =>'email',
-               'headerOptions' => ['style' => 'text-align:center; width: 100px'],
+               'headerOptions' => ['style' => 'text-align:center; width: 150px'],
            ],
 
             //'status_aktif',
