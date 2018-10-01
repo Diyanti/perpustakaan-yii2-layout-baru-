@@ -26,7 +26,7 @@ class Peminjaman extends \yii\db\ActiveRecord
         return $this->hasOne(Buku::className(), ['id' => 'id_buku']);
     }
 
-       //untuk menampilkan di peminjaman buku sebagai nama
+    //untuk menampilkan di peminjaman buku sebagai nama
     public function getAnggota()
     {
         return $this->hasOne(Anggota::className(), ['id' => 'id_anggota']);

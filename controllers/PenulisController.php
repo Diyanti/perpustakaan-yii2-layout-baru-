@@ -8,6 +8,10 @@ use app\models\PenulisSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\ArrayHelper;
+use PhpOffice\PhpWord\IOfactory;
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\Shared\Converter;
 
 /**
  * PenulisController implements the CRUD actions for Penulis model.
@@ -123,5 +127,83 @@ class PenulisController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    //Export penulis ke word
+    public function actionPenulisWord()
+    {
+        $phpWord = new phpWord();
+        $section = $phpWord->addSection(
+            [
+                'marginTop' => Converter::cmTotwip(1.80),
+                'marginBottom' => Converter::cmTotwip(1.80),
+                'marginLeft' => Converter::cmTotwip(1.2),
+                'marginRight' => Converter::cmTotwip(1.6),
+            ]
+        );
+
+        $fontStyle = [
+            'underline' => 'dash',
+            'bold' => true,
+            'italic' => true,
+        ];
+        $paragraphCenter =[
+        'alignment' =>'center',
+        ];
+
+        $headerStyle = [
+            'bold' => true,
+        ];
+
+        $section->addText(
+            'Daftar Penulis',
+            $headerStyle,
+            $fontStyle,
+            $paragraphCenter
+        );
+
+        $section->addText(
+            'RINCIAN DARI TABEL PENULIS',
+            $headerStyle,
+            $paragraphCenter
+        );
+
+        $section->addTextBreak(1);
+
+        $judul = $section->addTextRun($paragraphCenter);
+
+        $judul->addText('Keterangan dari ', $fontStyle);
+        $judul->addText('Tabel ', ['italic' =>true]);
+        $judul->addText('Penulis ', ['bold' =>true]);
+
+        $table = $section->addTable([
+            'alignment' => 'center',
+            'bgColor' => 6,
+            'borderSize' => 6,
+            
+        ]);
+        $table->addRow(null);
+        $table->addCell(500)->addText('NO', $headerStyle, $paragraphCenter);
+        $table->addCell(5000)->addText('Nama', $headerStyle, $paragraphCenter);
+        $table->addCell(5000)->addText('Alamat', $headerStyle, $paragraphCenter);
+        $table->addCell(200)->addText('Telepon', $headerStyle, $paragraphCenter);
+        $table->addCell(200)->addText('Email', $headerStyle, $paragraphCenter);
+
+        $semuaPenulis = Penulis::find()->all();
+        $nomor = 1;
+        foreach ($semuaPenulis as $penulis) {
+        $table->addRow(null);
+        $table->addCell(500)->addText($nomor++, null, $headerStyle, $paragraphCenter);
+        $table->addCell(5000)->addText($penulis->nama, null);
+        $table->addCell(5000)->addText($penulis->alamat, null, $paragraphCenter);
+        $table->addCell(5000)->addText($penulis->telepon, null, $paragraphCenter);
+        $table->addCell(5000)->addText($penulis->email, null, $paragraphCenter);
+    }
+
+        $filename = time() . 'penulis-word.docx';
+        $path = 'exportwordpenulis/' . $filename;
+        $xmlWriter = IOfactory::createWriter($phpWord, 'Word2007');
+        $xmlWriter -> save($path);
+        return $this -> redirect($path);
     }
 }

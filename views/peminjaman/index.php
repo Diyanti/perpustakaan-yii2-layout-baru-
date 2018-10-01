@@ -5,6 +5,7 @@ use yii\grid\GridView;
 use app\models\Buku;
 use app\models\Peminjaman;
 use app\models\Anggota;
+use app\models\User;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\PeminjamanSearch */
@@ -15,12 +16,14 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="peminjaman-index box box-primary">
   <div class="box-header">
-    <h3><?= Html::encode($this->title) ?></h3>
+    <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-  </div>
+    <?php if (User::isAnggota()): ?>
     <p>
         <?= Html::a('<i class="fa fa-plus"></i> Tambah Peminjaman', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    </p>    
+    <?php endif ?>
+  </div>
     <div class="box-body"> 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

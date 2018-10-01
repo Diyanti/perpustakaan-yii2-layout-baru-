@@ -10,12 +10,14 @@ $this->title = 'Create Buku';
 $this->params['breadcrumbs'][] = ['label' => 'Bukus', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="buku-create">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
+	<div class="buku-create box box-primary">
+	<div class="box-header">
+    <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
+	</div>
+	<div class="box-body">
     <?= $this->render('_form', [
         'model' => $model,
     ]) ?>
 
+</div>
 </div>

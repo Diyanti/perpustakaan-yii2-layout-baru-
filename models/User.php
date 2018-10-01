@@ -21,7 +21,6 @@ class user extends \yii\db\ActiveRecord  implements \yii\web\IdentityInterface
     {
         return \yii\helpers\ArrayHelper::map(self::find()->all(), 'id', 'nama');
     }
-    
          //untuk menampilkan di peminjaman buku sebagai nama
     public function getAnggota()
     {
@@ -101,5 +100,49 @@ class user extends \yii\db\ActiveRecord  implements \yii\web\IdentityInterface
     {
         return $this->password == $password;
     }
-   
+
+    //untuk validasi (session) untuk admin
+   public static function isAdmin()
+   {
+    if (Yii::$app->user->isGuest) {
+        return false;
+    }
+    $model = User::findOne(['username' => Yii::$app->user->identity->username]);
+    if ($model == null) {
+        return false;
+    } elseif ($model->id_user_role == 1) {
+        return true;
+    }
+    return false;
+   }
+
+   //untuk validasi anggota
+   public static function isAnggota()
+   {
+    if (Yii::$app->user->isGuest) {
+        return false;
+    }
+    $model = User::findOne(['username' => Yii::$app->user->identity->username]);
+    if ($model == null) {
+        return false;
+    } elseif ($model->id_user_role == 2) {
+        return true;
+    }
+    return false;
+   }
+
+   //untuk validasi petugas
+   public static function isPetugas()
+   {
+    if (Yii::$app->user->isGuest) {
+        return false;
+    }
+    $model = User::findOne(['username' => Yii::$app->user->identity->username]);
+    if ($model == null) {
+        return false;
+    } elseif ($model->id_user_role == 3) {
+        return true;
+    }
+    return false;
+   }
 }

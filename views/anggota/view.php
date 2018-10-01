@@ -10,10 +10,10 @@ $this->title = $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Anggotas', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="anggota-view">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
+<div class="anggota-view box box-primary">
+    <div class="box-header">
+    <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
+</div>
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
@@ -24,11 +24,11 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ]) ?>
     </p>
-
+    <div class="box-body">
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
+            // 'id',
             'nama',
             'alamat',
             'telepon',
@@ -37,4 +37,5 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
+</div>
 </div>

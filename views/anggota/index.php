@@ -7,20 +7,19 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\AnggotaSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Anggotas';
+$this->title = 'Anggota';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="anggota-index box box-primary">
-  
-    <h1><?= Html::encode($this->title) ?></h1>
+  <div class="box-header">
+    <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-    <div class="box-header">
+    </div>
     <p>
         <?= Html::a('<i class="fa fa-plus"></i> Tambah Anggota', ['create'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a('<i class="fa fa-print"></i> Export word', ['anggota/export-word'], ['class' => 'btn btn-primary btn-flat']) ?>
+        <?= Html::a('<i class="fa fa-print"></i> Export word Surat Imunisasi', ['anggota/export-word'], ['class' => 'btn btn-primary btn-flat']) ?>
     </p>
-  </div>
-
+    <div class="box-body">
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -54,5 +53,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
+</div>
 </div>
 

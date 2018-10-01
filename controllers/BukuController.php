@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Buku;
+use app\models\User;
 use app\models\BukuSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -13,8 +14,15 @@ use yii\web\ArrayHelper;
 use PhpOffice\PhpWord\IOfactory;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\Shared\Converter;
-use PhpOffice\PhpSpreadsheet;
+use yii\filters\AccessControl;
+
+use kartik\mpdf\Pdf;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+
 
 /**
  * BukuController implements the CRUD actions for Buku model.
@@ -24,13 +32,41 @@ class BukuController extends Controller
     /**
      * {@inheritdoc}
      */
+    // public function behaviors()
+    // {
+    //     return [
+    //         'access' => [
+    //         'verbs' => [
+    //             'class' => AccessControl::className(),
+    //             'actions' => [
+    //                 'delete' => ['POST'],
+    //             ],
+    //         ],
+    //     ];
+    // }
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['logout'],
+                'rules' => [
+                    // [
+                    //     'actions' => ['index','update','create'],
+                    //     'allow' => User::isAdmin() || User::isAnggota(),
+                    //     'roles' => ['@'],
+                    // ],
+                    [
+                        'actions' => ['view'],
+                        'allow' => User::isAnggota(),
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'logout' => ['post'],
                 ],
             ],
         ];
@@ -45,12 +81,15 @@ class BukuController extends Controller
         $searchModel = new BukuSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+         if (Yii::$app->request->get('export')) {
+            return $this->exportExcel(Yii::$app->request->queryParams);
+        }
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
-
+    
     /**
      * Displays a single Buku model.
      * @param integer $id
@@ -116,7 +155,7 @@ class BukuController extends Controller
     {
         $model = $this->findModel($id);
 
-        //Mengambil data lama di database
+        //Mengambil data lama yang ada di database
         $sampul_lama = $model->sampul;
         $berkas_lama = $model->berkas;
 
@@ -127,7 +166,6 @@ class BukuController extends Controller
             $berkas = UploadedFile::getInstance($model, 'berkas');
 
             //Jika ada data file yang dirubah maka data lama akan dihapus dan diganti dengan data baru yang sudah diambil 
-
             if ($sampul !== null) {
                 unlink(Yii::$app->basePath . '/web/upload/' . $sampul_lama);
                 $model->sampul = time() . '_' . $sampul->name;
@@ -274,34 +312,79 @@ class BukuController extends Controller
     }
 
      //Untuk Export file ke Excel
-    public function actionExportExcel() {
-     
-    $spreadsheet = new PhpSpreadsheet\Spreadsheet();
-    $worksheet = $spreadsheet->getActiveSheet();
-     
-    //Menggunakan Model
+    public function exportExcel($params) {
+        $spreadsheet = new Spreadsheet();
+        
+        $spreadsheet->setActiveSheetIndex(0);
+        
+        $sheet = $spreadsheet->getActiveSheet();
+        
+        $setBorderArray = array(
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => array('argb' => '000000'),
+                ),
+            ),
+        );
 
-    $database = Buku::find()
-    ->select('nama, tahun_terbit, sinopsis')
-    ->all();
-    //A1 untuk kolom A ke 1, dan B1 untuk kolom B ke 1
-    $worksheet->setCellValue('A1', 'Judul Buku');
-    $worksheet->setCellValue('B1', 'Tahun Terbit');
-    $worksheet->setCellValue('C1', 'Sinopsis');
+        $sheet->getColumnDimension('A')->setWidth(5);
+        $sheet->getColumnDimension('B')->setWidth(25);
+        $sheet->getColumnDimension('C')->setWidth(30);
+        $sheet->getColumnDimension('D')->setWidth(25);
+        $sheet->getColumnDimension('E')->setWidth(30);
+        $sheet->getColumnDimension('F')->setWidth(25);
+        $sheet->getColumnDimension('G')->setWidth(35);
 
-     
-    //JIka menggunakan DAO , gunakan QueryAll()
-     
-    $database = \yii\helpers\ArrayHelper::toArray($database);
-    $worksheet->fromArray($database, null, 'A2');
-     
-    $writer = new Xlsx($spreadsheet);
-     
-    header('Content-Type: application/vnd.ms-excel');
-    header('Content-Disposition: attachment;filename="download.xlsx"');
-    header('Cache-Control: max-age=0');
-    $writer->save('php://output');
-     
+        $sheet->setCellValue('A3', strtoupper('No'));
+        $sheet->setCellValue('B3', strtoupper('Nama'));
+        $sheet->setCellValue('C3', strtoupper('Tahun Terbit'));
+        $sheet->setCellValue('D3', strtoupper('Penulis'));
+        $sheet->setCellValue('E3', strtoupper('Penerbit'));
+        $sheet->setCellValue('F3', strtoupper('Kategori'));
+        $sheet->setCellValue('G3', strtoupper('Sinopsis'));
+
+        $spreadsheet->getActiveSheet()->setCellValue('A1', 'DATA BUKU');
+
+        $spreadsheet->getActiveSheet()->getStyle('A3:G3')->getFill()->setFillType(Fill::FILL_SOLID);
+        $spreadsheet->getActiveSheet()->getStyle('A3:G3')->getFill()->getStartColor()->setARGB('d8d8d8');
+        $spreadsheet->getActiveSheet()->mergeCells('A1:G1');
+        $spreadsheet->getActiveSheet()->getDefaultRowDimension('3')->setRowHeight(25);
+        $sheet->getStyle('A1:G3')->getFont()->setBold(true);
+        $sheet->getStyle('A1:G3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+        $row = 3;
+        $i=1;
+
+        $searchModel = new BukuSearch();
+
+        foreach($searchModel->getQuerySearch($params)->all() as $data){
+
+            $row++;
+            $sheet->setCellValue('A' . $row, $i);
+            $sheet->setCellValue('B' . $row, $data->nama);
+            $sheet->setCellValue('C' . $row, $data->tahun_terbit);
+            $sheet->setCellValue('D' . $row, @$data->penulis->nama);
+            $sheet->setCellValue('E' . $row, @$data->penerbit->nama);
+            $sheet->setCellValue('F' . $row, @$data->kategori->nama);
+            $sheet->setCellValue('G' . $row, $data->sinopsis);
+            $i++;
+        }
+
+        $sheet->getStyle('A3:G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('D3:G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('E3:G' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+        $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+        $sheet->getStyle('A3:G' . $row)->applyFromArray($setBorderArray);
+
+        $filename = time() . 'Data Buku.xlsx';
+        $path = 'exportexcelbuku/' . $filename;
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($path);
+
+        return $this->redirect($path);
     }
 
 }

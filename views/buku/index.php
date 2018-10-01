@@ -5,6 +5,9 @@ use yii\grid\GridView;
 use app\models\Kategori;
 use app\models\Penerbit;
 use app\models\Penulis;
+use app\models\Buku;
+use app\models\BukuSearch;
+use yii\web\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\BukuSearch */
@@ -22,7 +25,8 @@ $this->params['breadcrumbs'][] = $this->title;
     
         <?= Html::a('<i class="fa fa-plus"></i> Tambah Buku', ['create'], ['class' => 'btn btn-success']) ?>
         <?= Html::a('<i class="fa fa-print"></i> Export word', ['buku/jadwal-pl'], ['class' => 'btn btn-primary btn-flat']) ?>
-        <?= Html::a('<i class="fa fa-print"></i> Export Excel', ['buku/export-excel'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('<i class="fa fa-print"></i> Export Excel', Yii::$app->request->url.'&export=1', ['class' => 'btn btn-success btn-flat','target' => '_blank']) ?>
+        
          <?= Html::a('<i class="fa fa-print"></i> Export PDF', ['site/export-pdf'], ['class' => 'btn btn-danger']) ?>
    
    <div class="box-body"> 
@@ -109,14 +113,13 @@ $this->params['breadcrumbs'][] = $this->title;
               'format' =>'raw',
               'value' => function ($model){
                 if ($model->sampul != '') {
-                    return Html::img('@web/upload/'. $model->sampul,['class'=>'img-responsive','style' => 'height:150px', 'align'=>'center']);
+                    return Html::img('@web/upload/'. $model->sampul,['style' => 'width:150px','height:150px', 'align'=>'center']);
                 }else{
                   return '<div align="center"><h1>No Image</h1></div>';
                 }
               },
             ],
          
-
             // 'berkas',
             [
                 'attribute' => 'berkas',

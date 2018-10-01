@@ -73,4 +73,24 @@ class BukuSearch extends Buku
 
         return $dataProvider;
     }
+
+        public function getQuerySearch($params)
+    {
+        $query = Buku::find();
+
+        $this->load($params);
+        // add conditions that should always apply here
+        // grid filtering conditions
+        $query->andFilterWhere([
+            'id' => $this->id,
+            'nama' => $this->nama,
+            'tahun_terbit' => $this->tahun_terbit,
+            'id_penulis' => $this->id_penulis,
+            'id_penerbit' => $this->id_penerbit,
+            'id_kategori' => $this->id_kategori,
+            'sinopsis' => $this->sinopsis,
+        ]);
+
+        return $query;
+    }
 }

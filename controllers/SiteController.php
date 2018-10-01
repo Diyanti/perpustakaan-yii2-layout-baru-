@@ -11,6 +11,7 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 use Mpdf\Mpdf;
 use app\models\Buku;
+use app\models\User;
 
 class SiteController extends Controller
 {
@@ -79,9 +80,9 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
+        // if (!Yii::$app->user->isGuest) {
+        //     return $this->goHome();
+        // }
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
@@ -137,7 +138,21 @@ class SiteController extends Controller
     // Custom Sendiri untuk dashboard
     public function actionDashboard()
     {
-        return $this->render('dashboard');
+        // if (User::isAdmin() || User::isAnggota()) {
+         if (User::isAdmin()) {
+            return $this->render('dashboard');
+
+        } elseif (User::isAnggota()) {
+            return $this->render('dashboard');
+            
+        } elseif (User::isPetugas()) {
+            return $this->render('dashboard');
+        }
+        else
+        {
+            return $this->redirect(['site/login']);
+        }
+        // return $this->render('dashboard');
     }
 
      //Untuk Export ke PDF

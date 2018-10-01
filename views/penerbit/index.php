@@ -11,14 +11,14 @@ $this->title = 'Penerbit';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="penerbit-index box box-primary">
-
-    <h1><?= Html::encode($this->title) ?></h1>
+  <div class="box-header">
+    <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-    <div class="box-header">
+    </div>
     <p>
         <?= Html::a('<i class="fa fa-plus"></i> Tambah Penerbit', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-  </div>
+    <div class="box-body">
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -51,5 +51,6 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
   </div>
+</div>
 
 

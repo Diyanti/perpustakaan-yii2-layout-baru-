@@ -20,8 +20,8 @@ $this->title = 'Perpustakaan';
 <div class="row">
 <div class="col-lg-3 col-xs-6">
     <!-- small box -->
-    <div class="small-box bg-green">
-        <div class="inner">
+    <div class="small-box bg-blue">
+    <div class="inner">
             <p>Jumlah Buku</p>
             <h3><?= Yii::$app->formatter->asInteger(Buku::getCount()); ?></h3>
         </div>
@@ -35,7 +35,7 @@ $this->title = 'Perpustakaan';
 <!-- ./col -->
 <div class="col-lg-3 col-xs-6">
     <!-- small box --> 
-    <div class="small-box bg-purple">
+    <div class="small-box bg-green">
         <div class="inner">
             <p>Jumlah Penerbit</p>
 
@@ -78,8 +78,6 @@ $this->title = 'Perpustakaan';
         </div>
     </div>
 </div>
-<br>
-<br>
 
 <!-- Chart Bar --> 
 <div class="row">
@@ -192,17 +190,15 @@ $this->title = 'Perpustakaan';
 <?php $this->title = 'Perpustakaan'; ?>
 
 <div class="row">
-
     <?php foreach (Buku::find()->all() as $buku) {?> 
         <!-- Kolom box mulai -->
         <div class="col-md-4">
-
             <!-- Box mulai -->
             <div class="box box-widget">
 
                 <div class="box-header with-border">
                     <div class="user-block">
-                        <img class="img-circle" src="<?= Yii::getAlias('@web').'/images/P2.jpg'; ?>" alt="User Image">
+                        <img class="img-circle" src="<?= Yii::getAlias('@web').'/images/a.jpg'; ?>" alt="User Image">
                         <span class="username"><?= Html::a($buku->nama, ['buku/view', 'id' => $buku->id]); ?></span>
                         <span class="description"> Di Terbitkan : Tahun <?= $buku->tahun_terbit; ?></span>
                     </div>
@@ -217,7 +213,7 @@ $this->title = 'Perpustakaan';
                     <img class="img-responsive pad" src="<?= Yii::$app->request->baseUrl.'/upload/'.$buku['sampul']; ?>" alt="Photo">
                     <p>Sinopsis : <?= substr($buku->sinopsis,0,120);?> ...</p>
                     <?= Html::a("<i class='fa fa-eye'> Detail Buku</i>",["buku/view","id"=>$buku->id],['class' => 'btn btn-default']) ?>
-                    <?= Html::a('<i class="fa fa-file"> Pinjam Buku</i>', ['#', 'id' => $buku->id], [
+                    <?= Html::a('<i class="fa fa-file"> Pinjam Buku</i>', ['peminjaman/create', 'id' => $buku->id], [
                         'class' => 'btn btn-primary',
                         'data' => [
                             'confirm' => 'Apa anda yakin ingin meminjam buku ini?',
@@ -254,7 +250,7 @@ $this->title = 'Perpustakaan';
 
                 <div class="box-header with-border">
                     <div class="user-block">
-                        <img class="img-circle" src="<?= Yii::getAlias('@web').'/images/P2.jpg'; ?>" alt="User Image">
+                        <img class="img-circle" src="<?= Yii::getAlias('@web').'/images/a.jpg'; ?>" alt="User Image">
                         <span class="username"><?= Html::a($buku->nama, ['buku/view', 'id' => $buku->id]); ?></span>
                         <span class="description"> Di Terbitkan : Tahun <?= $buku->tahun_terbit; ?></span>
                     </div>

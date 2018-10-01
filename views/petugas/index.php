@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use app\components\Helper;
+use app\models\Petugas;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\PetugasSearch */
@@ -11,15 +13,17 @@ $this->title = 'Petugas';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="petugas-index box box-primary">
-  
-    <h1><?= Html::encode($this->title) ?></h1>
+  <div class="box-header">
+    <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-    <div class="box-header">
+    </div>
     <p>
         <?= Html::a('<i class="fa fa-plus"></i> Tambah Petugas', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('<i class="fa fa-print"></i> Export Excel', Yii::$app->request->url.'&export=1', ['class' => 'btn btn-success btn-flat','target' => '_blank']) ?>
+        <?= Html::a('<i class="fa fa-print"></i> Export Pdf', Yii::$app->request->url.'&export-pdf=1', ['class' => 'btn btn-danger btn-flat','target' => '_blank']) ?>
     </p>
-  </div>
-    <?= GridView::widget([
+    <div class="box-body">
+      <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
@@ -51,5 +55,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
+</div>
 </div>
 

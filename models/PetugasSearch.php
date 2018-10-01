@@ -69,4 +69,23 @@ class PetugasSearch extends Petugas
 
         return $dataProvider;
     }
+    public function getQuerySearch($params)
+    {
+        $query = Petugas::find();
+
+        $this->load($params);
+
+        // add conditions that should always apply here
+
+        // grid filtering conditions
+        $query->andFilterWhere([
+            'id' => $this->id,
+            'nama' => $this->nama,
+            'alamat' => $this->alamat,
+            'telepon' => $this->telepon,
+            'email' => $this->email,
+        ]);
+
+        return $query;
+    }
 }

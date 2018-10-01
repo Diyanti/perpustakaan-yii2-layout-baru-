@@ -75,8 +75,8 @@ table {
  <thead>
   <tr>
    <th>No</th>
-   <th>NAMA</th>
-   <th>TAHUN TERBIT</th>
+   <th>Nama</th>
+   <th>Tahun Terbit</th>
    <th>Penerbit</th>
    <th>Kategori</th>
    <th>Penulis</th>

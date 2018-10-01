@@ -16,9 +16,13 @@ use Yii;
  */
 class Anggota extends \yii\db\ActiveRecord
 {
+
     public static function getList()
     {
-        return \yii\helpers\ArrayHelper::map(self::find()->all(), 'id', 'nama');
+        if (User::isAnggota())
+       {
+           return \yii\helpers\ArrayHelper::map(Anggota::find()->andWhere(['id' => Yii::$app->user->identity->id_anggota])->all(), 'id', 'nama');
+       }
     }
 
     /**
@@ -56,4 +60,5 @@ class Anggota extends \yii\db\ActiveRecord
             'status_aktif' => 'Status Aktif',
         ];
     }
+
 }
