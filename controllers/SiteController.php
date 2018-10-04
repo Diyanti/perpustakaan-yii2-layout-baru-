@@ -12,12 +12,24 @@ use app\models\ContactForm;
 use Mpdf\Mpdf;
 use app\models\Buku;
 use app\models\User;
+use app\models\Anggota;
+use app\models\RegisterForm;
 
 class SiteController extends Controller
 {
     /**
      * {@inheritdoc}
      */
+    public function verifyCode()
+    {
+        return[
+                'captcha' => [
+                    'class' => 'yii\captcha\CaptchaAction',
+                    'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+                ],
+        ];
+    }
+    
     public function behaviors()
     {
         return [
@@ -153,6 +165,39 @@ class SiteController extends Controller
             return $this->redirect(['site/login']);
         }
         // return $this->render('dashboard');
+    }
+
+    //untuk membuat register sendiri
+    public function actionRegister()
+    {
+        //agar secara otomatis membuat sendiri
+        $this->layout='main-login';
+        //$model untuk layout register
+        $model = new RegisterForm();
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+
+            $anggota = new Anggota();
+            $anggota->nama = $model->nama;
+            $anggota->alamat = $model->alamat;
+            $anggota->telepon = $model->telepon;
+            $anggota->email = $model->email;
+            $anggota->save();
+
+            $user = new User();
+            $user->username = $model->username;
+            $user->password = $model->password;
+            $user->id_anggota = $anggota->id;
+            $user->id_petugas = 0;
+            $user->id_user_role = 2;
+            $user->status = 2;
+            $user->save();
+
+            return $this->redirect(['site/login']);
+        } 
+
+        //untuk memunculkan form dari halaman register
+        return $this->render('register', ['model'=>$model]);
     }
 
      //Untuk Export ke PDF
