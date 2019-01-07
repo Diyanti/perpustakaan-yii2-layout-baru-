@@ -62,17 +62,36 @@ class PeminjamanController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($id_buku = null)
     {
         $model = new Peminjaman();
+       $model->id_buku = $id_buku;
+       $model->status_buku = 1;
+       $model->tanggal_kembali = date('Y-m-d', strtotime('+7 days'));
+       $model->tanggal_batas_pinjam = '0000-00-00';
+       // if (User::isAnggota()) {
+       //     $model->id_anggota=1;
+       // }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+       if (Yii::$app->user->identity->id_user_role == 2) {
+           $model->id_anggota = Yii::$app->user->identity->id_anggota;
+           $model->tanggal_pinjam = date('Y-m-d');
+           $model->tanggal_kembali = date('Y-m-d', strtotime('+7 days'));
+           $model->status_buku = 1;
+           $model->tanggal_batas_pinjam = '0000-00-00';
+           Yii::$app->mail->compose('@app/template/pemberitahuan',['model' => $model])
+               ->setFrom('diyantiyan51@gmail.com')
+               ->setTo($model->anggota->email)
+               ->setSubject('Pemberitahuan - Peminjaman Buku')
+               ->send();
+           $model->save();
+           Yii::$app->session->setFlash('success', 'Berhasil meminjam buku. Silahkan cek email anda.');
+           return $this->redirect(['index']);
+       }
+       
+       return $this->render('create', [
+           'model' => $model,
+       ]);
     }
 
     /**
@@ -123,5 +142,38 @@ class PeminjamanController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionKembalikanBuku($id)
+    {
+        $model = Peminjaman::findOne($id);
+        
+        $model->status_buku = 2;
+        $model->tanggal_pengembalian_buku = date('Y-m-d');
+
+        $selisih = $model->getSelisih();
+
+        $denda1 = new Denda();
+        $denda1->id_peminjaman = $model->id;
+
+        foreach (\app\models\KenaikanDenda::find()->all() as $denda) {
+            if ($denda->hari <= $selisih) {
+                $model->harga = $denda->harga;
+                $denda1->harga = $denda->harga;
+            } else {
+                $model->harga = 0;
+            }
+        }
+
+        $model->save(false);
+        $denda1->save();
+
+        Yii::$app->session->setFlash('Berhasil', 'Buku sudah berhasil di kembalikan');
+        
+        if (User::isAdmin()) {
+            return $this->redirect(Yii::$app->request->referrer);
+        } else {
+            return $this->redirect(['peminjaman/index']);
+        }
     }
 }

@@ -72,7 +72,11 @@ class Buku extends \yii\db\ActiveRecord
             [['tahun_terbit'], 'safe'],
             [['id_penulis', 'id_penerbit', 'id_kategori'], 'integer'],
             [['sinopsis'], 'string'],
-            [['nama', 'sampul', 'berkas'], 'string', 'max' => 255],
+            [['nama', 'harga'], 'string', 'max' => 255],
+            [['sampul'], 'file', 'extensions'=>'jpg, gif, png', 'maxSize'=>5218288, 'tooBig' => 'batas limit upload gambar 5mb'
+            ],
+            [['berkas'], 'file', 'extensions'=>'doc, docx, pdf', 'maxSize'=>5218288, 'tooBig' => 'batas limit upload berkas 5mb'
+            ],
         ];
     }
 
@@ -85,9 +89,9 @@ class Buku extends \yii\db\ActiveRecord
             'id' => 'ID',
             'nama' => 'Nama',
             'tahun_terbit' => 'Tahun Terbit',
-            'id_penulis' => 'Id Penulis',
-            'id_penerbit' => 'Id Penerbit',
-            'id_kategori' => 'Id Kategori',
+            'id_penulis' => 'Penulis',
+            'id_penerbit' => 'Penerbit',
+            'id_kategori' => 'Kategori',
             'sinopsis' => 'Sinopsis',
             'sampul' => 'Sampul',
             'berkas' => 'Berkas',

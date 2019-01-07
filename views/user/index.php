@@ -18,10 +18,10 @@ $this->params['breadcrumbs'][] = $this->title;
     <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     </div>
-    <p>
-        <?= Html::a('Tambah User', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    
     <div class="box-body">
+
+    <?= Html::a('Tambah User', ['create'], ['class' => 'btn btn-success']) ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -33,11 +33,13 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                'attribute' =>'username',
                'headerOptions' => ['style' => 'text-align:center;'],
+               'contentOptions' => ['style' => 'text-align:center'],
            ],
             // 'password',
            [
                'attribute' =>'password',
                'headerOptions' => ['style' => 'text-align:center;'],
+               'contentOptions' => ['style' => 'text-align:center'],
            ],
             // 'id_anggota',
             [  

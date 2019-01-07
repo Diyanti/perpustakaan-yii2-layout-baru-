@@ -15,15 +15,13 @@ use PhpOffice\PhpWord\IOfactory;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\Shared\Converter;
 use yii\filters\AccessControl;
-
 use kartik\mpdf\Pdf;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
-
-
+use Da\QrCode\QrCode;
 /**
  * BukuController implements the CRUD actions for Buku model.
  */
@@ -47,22 +45,40 @@ class BukuController extends Controller
     public function behaviors()
     {
         return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['logout'],
-                'rules' => [
-                    // [
-                    //     'actions' => ['index','update','create'],
-                    //     'allow' => User::isAdmin() || User::isAnggota(),
-                    //     'roles' => ['@'],
-                    // ],
-                    [
-                        'actions' => ['view'],
-                        'allow' => User::isAnggota(),
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
+             'access' => [
+               'class' => \yii\filters\AccessControl::className(),
+               'only' => ['logout', 'index'],
+               'rules' => [
+                   [
+                       'actions' => ['view', 'create', 'index'],
+                       'allow' => true,
+                       'roles' => ['@'],
+                       'matchCallback' => function() {
+                           return User::isAdmin() || User::isPetugas();
+                       }
+                   ],
+                   // true berarti bisa mengakses.
+                   [
+                       'actions' => ['index', 'create'],
+                       'allow' => false,
+                       'roles' => ['@'],
+                       'matchCallback' => function()
+                       {
+                           return User::isAnggota();
+                       },
+                   ],
+                   // false berarti tidak bisa mengakses
+                   // [
+                   //     'actions' => ['index', 'create', 'update'],
+                   //     'allow' => true,
+                   //     'roles' => ['@'],
+                   //     'matchCallback' => function()
+                   //     {
+                   //         return User::isPetugas();
+                   //     },
+                   // ],
+               ],
+           ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -133,7 +149,9 @@ class BukuController extends Controller
             //lokasi untuk menyimpan file
             $sampul->saveAs(Yii::$app->basePath . '/web/upload/' . $model->sampul);
             $berkas->saveAs(Yii::$app->basePath . '/web/upload/' . $model->berkas);
-
+            
+            //untuk alert atau notifikasi q and a
+            Yii::$app->session->setFlash('success', 'Berhasil menambahkan buku');
 
             //Menuju ke view id yg data di buat
             return $this->redirect(['view', 'id' => $model->id]);
@@ -185,6 +203,8 @@ class BukuController extends Controller
 
             //Simpan ke database
             $model->save(false);
+            //alert 
+            Yii::$app->session->setFlash('success', 'Berhasil memperbarui buku');
 
             //Menuju ke view id yang datanya sudah dibuat
             return $this->redirect(['view', 'id' => $model->id]);
@@ -204,11 +224,12 @@ class BukuController extends Controller
        $model = $this->findModel($id);
 
       //Basepath sebagai tempatnya 
-      unlink(Yii::$app->basePath . '/web/upload/' . $model->sampul);
-      unlink(Yii::$app->basePath . '/web/upload/' . $model->berkas);
+      // unlink(Yii::$app->basePath . '/web/upload/' . $model->sampul);
+      // unlink(Yii::$app->basePath . '/web/upload/' . $model->berkas);
 
       $model->delete();
-
+      Yii::$app->session->setFlash('success', 'Berhasil menghapus buku');
+      
       //redirect untuk menunjukan tempat kemana akan kembali, disini kembalinya menuju ke Index
         return $this->redirect(['index']);
     }
@@ -385,6 +406,18 @@ class BukuController extends Controller
         $writer->save($path);
 
         return $this->redirect($path);
+    }
+
+    //untuk QRCODE
+    public function actionBuatQrcode() 
+    {
+    $qrCode = (new QrCode('isi dari qr code'))
+    ->setSize(250)
+    ->setMargin(5)
+    //untuk warna kode qrnya
+    ->useForegroundColor(0, 0, 0);
+    //untuk menyimpan gambar format jpg
+    $qrCode->writeFile(Yii::$app->basePath . '@web/qrcode/code.png');
     }
 
 }

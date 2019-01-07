@@ -24,6 +24,11 @@ class Anggota extends \yii\db\ActiveRecord
            return \yii\helpers\ArrayHelper::map(Anggota::find()->andWhere(['id' => Yii::$app->user->identity->id_anggota])->all(), 'id', 'nama');
        }
     }
+     //untuk menampilkan di peminjaman buku sebagai nama
+    public function getAnggota()
+    {
+        return $this->hasOne(Anggota::className(), ['id' => 'id_anggota']);
+    }
 
     /**
      * {@inheritdoc}
@@ -60,5 +65,10 @@ class Anggota extends \yii\db\ActiveRecord
             'status_aktif' => 'Status Aktif',
         ];
     }
+
+    public function getUser()
+   {
+       return $this->hasOne(User::class, ['id_anggota' => 'id']);
+   }
 
 }

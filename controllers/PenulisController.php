@@ -12,6 +12,12 @@ use yii\web\ArrayHelper;
 use PhpOffice\PhpWord\IOfactory;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\Shared\Converter;
+use app\components\Helper;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 /**
  * PenulisController implements the CRUD actions for Penulis model.
@@ -42,10 +48,19 @@ class PenulisController extends Controller
         $searchModel = new PenulisSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        if (Yii::$app->request->get('export')) {
+            return $this->exportExcel(Yii::$app->request->queryParams);
+        }
+
+        if (Yii::$app->request->get('export-pdf')) {
+            return $this->exportPdf(Yii::$app->request->queryParams);
+        }
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+
     }
 
     /**
@@ -205,5 +220,78 @@ class PenulisController extends Controller
         $xmlWriter = IOfactory::createWriter($phpWord, 'Word2007');
         $xmlWriter -> save($path);
         return $this -> redirect($path);
+    }
+    //Untuk export ke excel    
+    public function exportExcel($params)
+    {
+        $spreadsheet = new Spreadsheet();
+        
+        $spreadsheet->setActiveSheetIndex(0);
+        
+        $sheet = $spreadsheet->getActiveSheet();
+        
+        $setBorderArray = array(
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => array('argb' => '000000'),
+                ),
+            ),
+        );
+
+        $sheet->getColumnDimension('A')->setWidth(5);
+        $sheet->getColumnDimension('B')->setWidth(25);
+        $sheet->getColumnDimension('C')->setWidth(30);
+        $sheet->getColumnDimension('D')->setWidth(30);
+        $sheet->getColumnDimension('E')->setWidth(30);
+
+        $sheet->setCellValue('A3', strtoupper('No'));
+        $sheet->setCellValue('B3', strtoupper('Nama'));
+        $sheet->setCellValue('C3', strtoupper('Alamat'));
+        $sheet->setCellValue('D3', strtoupper('Telepon'));
+        $sheet->setCellValue('E3', strtoupper('Email'));
+       
+
+        $spreadsheet->getActiveSheet()->setCellValue('A1', 'DATA PENULIS');
+
+        $spreadsheet->getActiveSheet()->getStyle('A3:E3')->getFill()->setFillType(Fill::FILL_SOLID);
+        $spreadsheet->getActiveSheet()->getStyle('A3:E3')->getFill()->getStartColor()->setARGB('d8d8d8');
+        $spreadsheet->getActiveSheet()->mergeCells('A1:E1');
+        $spreadsheet->getActiveSheet()->getDefaultRowDimension('3')->setRowHeight(25);
+        $sheet->getStyle('A1:E3')->getFont()->setBold(true);
+        $sheet->getStyle('A1:E3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+        $row = 3;
+        $i=1;
+
+        $searchModel = new PenulisSearch();
+
+        foreach($searchModel->getQuerySearch($params)->all() as $data){
+
+            $row++;
+            $sheet->setCellValue('A' . $row, $i);
+            $sheet->setCellValue('B' . $row, $data->nama);
+            $sheet->setCellValue('C' . $row, $data->alamat);
+            $sheet->setCellValue('D' . $row, $data->telepon);
+            $sheet->setCellValue('E' . $row, $data->email);
+            
+            $i++;
+        }
+
+        $sheet->getStyle('A3:E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('D3:E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('E3:E' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+
+        $sheet->getStyle('C' . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+        $sheet->getStyle('A3:E' . $row)->applyFromArray($setBorderArray);
+
+        $filename = time() . 'Data Penulis.xlsx';
+        $path = 'exports/' . $filename;
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($path);
+
+        return $this->redirect($path);
     }
 }

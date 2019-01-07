@@ -9,6 +9,7 @@ use app\models\Penulis;
 use kartik\select2\Select2;
 use dosamigos\tinymce\TinyMce;
 use yii\web\UploadedFile;
+use kartik\number\NumberControl;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Buku */
@@ -80,6 +81,11 @@ use yii\web\UploadedFile;
     <?= $form->field($model, 'berkas')->widget(FileInput::classname(), [
         'data' => $model->berkas,
         'options' => ['multiple' => true],
+    ]); ?>
+
+    <?= $form->field($model, 'harga')->widget(NumberControl::classname(), [
+        'data' => 'integer-only',
+        'maskedInputOptions' => ['digits' => 0],
     ]); ?>
 
     <div class="form-group">

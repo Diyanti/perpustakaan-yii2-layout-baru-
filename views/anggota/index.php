@@ -15,11 +15,10 @@ $this->params['breadcrumbs'][] = $this->title;
     <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     </div>
-    <p>
-        <?= Html::a('<i class="fa fa-plus"></i> Tambah Anggota', ['create'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a('<i class="fa fa-print"></i> Export word Surat Imunisasi', ['anggota/export-word'], ['class' => 'btn btn-primary btn-flat']) ?>
-    </p>
     <div class="box-body">
+      <?= Html::a('<i class="fa fa-plus"></i> Tambah Anggota', ['create'], ['class' => 'btn btn-success']) ?>
+      <?= Html::a('<i class="fa fa-print"></i> Export word Surat Imunisasi', ['anggota/export-word'], ['class' => 'btn btn-primary btn-flat']) ?>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -31,21 +30,25 @@ $this->params['breadcrumbs'][] = $this->title;
              [
                'attribute' =>'nama',
                'headerOptions' => ['style' => 'text-align:center;'],
+                'contentOptions' => ['style' => 'text-align:center'],
              ],
             // 'alamat:ntext',
              [
                'attribute' =>'alamat',
                'headerOptions' => ['style' => 'text-align:center; width: 120px'],
+               'contentOptions' => ['style' => 'text-align:center'],
            ],
             // 'telepon',
            [
                'attribute' =>'telepon',
                'headerOptions' => ['style' => 'text-align:center; width: 120px'],
+               'contentOptions' => ['style' => 'text-align:center'],
            ],
             // 'email:email',
            [
                'attribute' =>'email',
                'headerOptions' => ['style' => 'text-align:center; width: 150px'],
+               'contentOptions' => ['style' => 'text-align:center'],
            ],
 
             //'status_aktif',

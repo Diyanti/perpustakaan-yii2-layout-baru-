@@ -7,7 +7,7 @@ use yii\helpers\Html;
 
 <header class="main-header">
 
-    <?= Html::a('<span class="logo-mini">APP</span><span class="logo-lg">' . Yii::$app->name . '</span>', Yii::$app->homeUrl, ['class' => 'logo']) ?>
+    <?= Html::a('<span class="logo-mini">APP</span><span class="logo-lg">' . "Perpustakaan YII2". '</span>', Yii::$app->homeUrl, ['class' => 'logo']) ?>
 
     <nav class="navbar navbar-static-top" role="navigation">
 
@@ -33,32 +33,32 @@ use yii\helpers\Html;
                     <ul class="dropdown-menu">
                         <!-- User image -->
                         <li class="user-header">
-                            <img src="<?= Yii::getAlias('@web').'/images/a.jpg'; ?>" class="img-circle" alt="User Image"/>
-                            <p>
+                            <img src="<?= Yii::getAlias('@web').'/images/POLINDRA.png'; ?>" class="img-circle" alt="User Image"/>
+                            <!-- <p>
                                 Alexander Pierce
                                 <small>Member since Nov. 2012</small>
-                            </p>
+                            </p> -->
                         </li>
                         <!-- Menu Body -->
                         <li class="user-body">
                             <div class="col-xs-4 text-center">
-                                <a href="#">Followers</a>
+                                <a href="#"></a>
                             </div>
                             <div class="col-xs-4 text-center">
-                                <a href="#">Sales</a>
+                                <a href="#"></a>
                             </div>
                             <div class="col-xs-4 text-center">
-                                <a href="#">Friends</a>
+                                <a href="#"></a>
                             </div>
                         </li>
                         <!-- Menu Footer-->
                         <li class="user-footer">
-                            <div class="pull-left">
+                            <!-- <div class="pull-left">
                                 <a href="#" class="btn btn-default btn-flat">Profile</a>
-                            </div>
+                            </div> -->
                             <div class="pull-right">
                                 <?= Html::a(
-                                    'Sign out',
+                                    'Logout',
                                     ['/site/logout'],
                                     ['data-method' => 'post', 'class' => 'btn btn-default btn-flat']
                                 ) ?>

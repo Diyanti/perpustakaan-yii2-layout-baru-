@@ -19,7 +19,7 @@ class BukuSearch extends Buku
     {
         return [
             [['id', 'id_penulis', 'id_penerbit', 'id_kategori'], 'integer'],
-            [['nama', 'tahun_terbit', 'sinopsis', 'sampul', 'berkas'], 'safe'],
+            [['nama', 'tahun_terbit', 'sinopsis', 'sampul', 'berkas', 'harga'], 'safe'],
         ];
     }
 
@@ -89,6 +89,7 @@ class BukuSearch extends Buku
             'id_penerbit' => $this->id_penerbit,
             'id_kategori' => $this->id_kategori,
             'sinopsis' => $this->sinopsis,
+            'harga' =>$this->harga,
         ]);
 
         return $query;

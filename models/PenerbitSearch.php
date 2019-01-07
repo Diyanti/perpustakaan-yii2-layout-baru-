@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Penerbit;
+use app\models\PenerbitSearch;
 
 /**
  * PenerbitSearch represents the model behind the search form of `app\models\Penerbit`.
@@ -68,5 +69,23 @@ class PenerbitSearch extends Penerbit
             ->andFilterWhere(['like', 'email', $this->email]);
 
         return $dataProvider;
+    }
+
+    public function getQuerySearch($params)
+    {
+        $query = Penerbit::find();
+
+        $this->load($params);
+        // add conditions that should always apply here
+        // grid filtering conditions
+        $query->andFilterWhere([
+            'id' => $this->id,
+            'nama' => $this->nama,
+            'alamat' => $this->alamat,
+            'telepon' => $this->telepon,
+            'email' => $this->email,
+        ]);
+
+        return $query;
     }
 }

@@ -12,8 +12,14 @@ use app\models\ContactForm;
 use Mpdf\Mpdf;
 use app\models\Buku;
 use app\models\User;
+use yii\widget\ListView;
+use yii\data\ActiveDataProvider;
 use app\models\Anggota;
 use app\models\RegisterForm;
+use app\models\ForgetPasswordForm;
+use app\models\NewPassword;
+use yii\web\NotFoundHttpException;
+
 
 class SiteController extends Controller
 {
@@ -150,20 +156,32 @@ class SiteController extends Controller
     // Custom Sendiri untuk dashboard
     public function actionDashboard()
     {
-        // if (User::isAdmin() || User::isAnggota()) {
-         if (User::isAdmin()) {
-            return $this->render('dashboard');
+        if (User::isAdmin() || User::isAnggota() || User::isPetugas()) {
 
-        } elseif (User::isAnggota()) {
-            return $this->render('dashboard');
+          //Membuat pagination di dahsboard anggota
+          $provider = new ActiveDataProvider([
+            'query' => \app\models\Buku::find(),
+            'pagination' => [
+                'pageSize' => 6
+            ],
+          ]);
+          return $this->render('dashboard', ['provider' => $provider]);
+        } else {
+          return $this->redirect('site/login');
+        }
+        //  if (User::isAdmin()) {
+        //     return $this->render('dashboard');
+
+        // } elseif (User::isAnggota()) {
+        //     return $this->render('dashboard');
             
-        } elseif (User::isPetugas()) {
-            return $this->render('dashboard');
-        }
-        else
-        {
-            return $this->redirect(['site/login']);
-        }
+        // } elseif (User::isPetugas()) {
+        //     return $this->render('dashboard');
+        // }
+        // else
+        // {
+        //     return $this->redirect(['site/login']);
+        // }
         // return $this->render('dashboard');
     }
 
@@ -184,14 +202,20 @@ class SiteController extends Controller
             $anggota->email = $model->email;
             $anggota->save();
 
+            //simpan ke model user
             $user = new User();
             $user->username = $model->username;
-            $user->password = $model->password;
+            $user->password = Yii::$app->getSecurity()->generatePasswordHash($model->password);
             $user->id_anggota = $anggota->id;
             $user->id_petugas = 0;
             $user->id_user_role = 2;
             $user->status = 2;
+            $user->token = Yii::$app->getSecurity()->generateRandomString ( $length = 50 );
             $user->save();
+            
+            if (!$user->save()){
+                return print_r($user->getErrors());
+            }
 
             return $this->redirect(['site/login']);
         } 
@@ -210,4 +234,73 @@ class SiteController extends Controller
          $mpdf->Output('DataBuku.pdf', 'D');
          exit;
    }
+
+   //untuk kirim email manual
+   public function actionSendMail()
+   {
+    Yii::$app->mail->compose()
+     ->setFrom('diyantiyan51@gmail.com')
+     ->setTo('diyantiy2@gmail.com')
+     ->setSubject('Test Send Email Diyanti')
+     ->send();
+   }
+
+   public function actionForget()
+   {
+       $this->layout = 'main-login';
+       $model = new ForgetPasswordForm();
+
+       if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+           if (!$model->sendEmail()) {
+               Yii::$app->session->setFlash('Gagal', 'Email tidak ditemukan');
+               return $this->refresh();
+           }
+           else
+           {
+               Yii::$app->session->setFlash('Berhasil', 'Cek Email Anda');
+               return $this->redirect(['site/login']);
+           }
+       }
+       return $this->render('forget', [
+           'model' => $model,
+       ]);
+   }
+
+   //untuk password baru
+   public function actionNewPassword($token)
+   {
+       $this->layout = 'main-login';
+       $model = new NewPassword();
+
+       // Untuk mendapatkan token yang ada di tabel user yang dimana sudah di relasikan di anggota model
+       $user = User::findOne(['token' => $token]);
+
+       if ($user === null) {
+           throw new NotFoundHttpException("Halaman tidak ditemukan", 404);
+       }
+
+       if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+           $user->password = Yii::$app->getSecurity()->generatePasswordHash($model->new_password);
+           $user->token = Yii::$app->getSecurity()->generateRandomString(50);
+           $user->save();
+           return $this->redirect(['site/login']);
+       }
+
+       return $this->render('new_password', [
+           'model' => $model,
+       ]);
+   }
+   //untuk mengecek status
+   public function actionCekStatus()
+    {
+        $query = Peminjaman::find()
+            ->andWhere(['tanggal_kembali' => date('Y-m-d')])
+            ->all();
+
+        foreach ($query as $peminjaman) {
+            $peminjaman->status = Peminjaman::DIKEMBALIKAN;
+            $peminjaman->save();
+        }
+    }
+
 }

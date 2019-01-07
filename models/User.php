@@ -3,7 +3,7 @@
 namespace app\models;
 
 use Yii;
-
+use yii\helpers\Html;
 /**
  * This is the model class for table "user".
  *
@@ -32,6 +32,18 @@ class user extends \yii\db\ActiveRecord  implements \yii\web\IdentityInterface
     {
         return $this->hasOne(Petugas::className(), ['id' => 'id_petugas']);
     }
+    public function getUserRole()
+    {
+        return $this->hasOne(UserRole::className(), ['id' => 'id_user_role']);
+    }
+    public function getStatus()
+    {
+        $datalist = [
+            '0' => 'tidak aktif',
+            '1' => 'aktif',
+        ];
+        return $datalist[$this->status];
+    }
     /**
      * {@inheritdoc}
      */
@@ -49,7 +61,8 @@ class user extends \yii\db\ActiveRecord  implements \yii\web\IdentityInterface
             [['username', 'password'], 'required'],
             [['id_anggota', 'id_petugas', 'id_user_role', 'status'], 'integer'],
             [['username'], 'string', 'max' => 255],
-            [['password'], 'string', 'max' => 25],
+            [['password'], 'string', 'max' => 255],
+            [['token'], 'string', 'max' => 50],
         ];
     }
 
@@ -64,8 +77,9 @@ class user extends \yii\db\ActiveRecord  implements \yii\web\IdentityInterface
             'password' => 'password',
             'id_anggota' => 'Anggota',
             'id_petugas' => 'Petugas',
-            'id_user_role' => 'Id User Role',
+            'id_user_role' => 'User Role',
             'status' => 'Status',
+            'token' => 'Token',
         ];
     }
 
@@ -95,10 +109,11 @@ class user extends \yii\db\ActiveRecord  implements \yii\web\IdentityInterface
     {
         return self::findOne(['username'=>$username]);
     }
-
+    //untuk validate password dengan hash
     public function validatePassword($password)
     {
-        return $this->password == $password;
+        // return $password == $this->password;
+        return Yii::$app->getSecurity()->validatePassword($password, $this->password);
     }
 
     //untuk validasi (session) untuk admin
@@ -145,4 +160,37 @@ class user extends \yii\db\ActiveRecord  implements \yii\web\IdentityInterface
     }
     return false;
    }
+
+   // public static function getFotoAdmin($htmlOptions=[])
+   //  {
+   //      return Html::img('@web/user/admin.jpg', $htmlOptions);
+   //  }
+
+   //  public static function getFotoAnggota($htmlOptions=[])
+   //  {
+   //     $query = Anggota::find()
+   //     ->andWhere(['id' => Yii::$app->user->identity->id_anggota])
+   //     ->one();
+
+   //     if ($query->foto != null) {
+   //         return Html::img('@web/user/' . $query->foto, $htmlOptions);
+   //     } else {
+   //         return Html::img('@web/user/no-images.png', $htmlOptions);
+   //     }
+   // }
+
+   //untuk foto
+   public static function getFotoPetugas($htmlOptions=[])
+   {
+       $query = Petugas::find()
+       ->andWhere(['id' => Yii::$app->user->identity->id_petugas])
+       ->one();
+
+       if ($query->foto != null) {
+           return Html::img('@web/user/' . $query->foto, $htmlOptions);
+       } else {
+           return Html::img('@web/user/no-images.png', $htmlOptions);
+       }
+   }
+
 }

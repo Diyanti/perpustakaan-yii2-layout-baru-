@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\User;
+use app\models\UserRole;
 use app\models\UserSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -65,14 +66,23 @@ class UserController extends Controller
     public function actionCreate()
     {
         $model = new User();
+        // $model->id_user_role = id_user_role;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            // var_dump($model->load(Yii::$app->request->post()));
+            // die; 
+            // $model->password = Yii::$app->getSecurity()->generatePasswordHash($model->password);
+            if ($model->save()) {
+                return $this->redirect(['index', 'id' => $model->id]);
+            } else {
+                return $this->render('create', ['model' => $model]);
+
+            }
         }
 
-        return $this->render('create', [
+            return $this->render('create', [
             'model' => $model,
-        ]);
+            ]);
     }
 
     /**
@@ -124,4 +134,6 @@ class UserController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+
 }

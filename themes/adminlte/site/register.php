@@ -11,18 +11,35 @@ $this->title = 'Sign In';
 
 $fieldOptions1 = [
     'options' => ['class' => 'form-group has-feedback'],
-    'inputTemplate' => "{input}<span class='glyphicon glyphicon-envelope form-control-feedback'></span>"
+     'inputTemplate' => "{input}<span class='glyphicon glyphicon-envelope form-control-feedback'></span>"
 ];
-
+ 
 $fieldOptions2 = [
     'options' => ['class' => 'form-group has-feedback'],
     'inputTemplate' => "{input}<span class='glyphicon glyphicon-lock form-control-feedback'></span>"
+];
+$fieldOptions3 = [
+    'options' => ['class' => 'form-group has-feedback'],
+    'inputTemplate' => "{input}<span class='glyphicon glyphicon-pencil form-control-feedback'></span>"
+];
+$fieldOptions4 = [
+    'options' => ['class' => 'form-group has-feedback'],
+    'inputTemplate' => "{input}<span class='glyphicon glyphicon-home form-control-feedback'></span>"
+];
+$fieldOptions5 = [
+    'options' => ['class' => 'form-group has-feedback'],
+    'inputTemplate' => "{input}<span class='glyphicon glyphicon-phone form-control-feedback'></span>"
+];
+
+$fieldOptions6 = [
+    'options' => ['class' => 'form-group has-feedback'],
+    'inputTemplate' => "{input}<span class='glyphicon glyphicon-bookmark form-control-feedback'></span>"
 ];
 ?>
 
 <div class="login-box">
     <div class="login-logo">
-        <a href="#"><b>Halaman</b>Register</a>
+        <a href="#"><b>Register</b></a>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">
@@ -36,27 +53,27 @@ $fieldOptions2 = [
             ->textInput(['minlength'=>6,'placeholder' => $model->getAttributeLabel('username')]) ?>
 
         <?= $form
-            ->field($model, 'password', $fieldOptions1)
+            ->field($model, 'password', $fieldOptions2)
             ->label(false)
             ->passwordInput(['minlength'=>6,'placeholder' => $model->getAttributeLabel('password')]) ?>
         
         <?= $form
-            ->field($model, 'nama', $fieldOptions1)
+            ->field($model, 'nama', $fieldOptions3)
             ->label(false)
             ->textInput(['minlength'=>4,'placeholder' => $model->getAttributeLabel('nama')]) ?>
 
         <?= $form
-            ->field($model, 'alamat', $fieldOptions1)
+            ->field($model, 'alamat', $fieldOptions4)
             ->label(false)
             ->textInput(['minlength'=>6,'placeholder' => $model->getAttributeLabel('alamat')]) ?>
 
         <?= $form
-            ->field($model, 'telepon', $fieldOptions1)
+            ->field($model, 'telepon', $fieldOptions5)
             ->label(false)
             ->textInput(['minlength'=>11,'maxlength'=>13,'placeholder' => $model->getAttributeLabel('telepon')]) ?>
 
         <?= $form
-            ->field($model, 'email', $fieldOptions1)
+            ->field($model, 'email', $fieldOptions6)
             ->label(false)
             ->textInput(['minlength'=>6,'placeholder' => $model->getAttributeLabel('email')]) ?>
 

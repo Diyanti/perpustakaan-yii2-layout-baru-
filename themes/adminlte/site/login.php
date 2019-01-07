@@ -41,7 +41,6 @@ $fieldOptions2 = [
 
         <div class="row">
             <div class="col-xs-8">
-                <?= $form->field($model, 'rememberMe')->checkbox() ?>
             </div>
             <!-- /.col -->
             <div class="col-xs-4">
@@ -50,11 +49,12 @@ $fieldOptions2 = [
             <!-- /.col -->
         </div>
 
-
         <?php ActiveForm::end(); ?>
 
-        <?= Html::a('Register', ['site/register']) ?>
-
+        <?= Html::a('Forgot Password', ['site/forget']) ?>
+        <p>
+        <?= Html::a('Are you have an Account? Register Here', ['site/register']) ?>
+        </p>
     </div>
     <!-- /.login-box-body -->
 </div><!-- /.login-box -->

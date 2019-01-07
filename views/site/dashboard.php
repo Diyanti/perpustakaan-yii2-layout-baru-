@@ -11,6 +11,7 @@ use app\models\Peminjaman;
 use miloschuman\highcharts\Highcharts;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\LinkPager;
 
 /* @var $this yii\web\View */
 $this->title = 'Perpustakaan';
@@ -79,7 +80,7 @@ $this->title = 'Perpustakaan';
     </div>
 </div>
 
-<!-- Chart Bar --> 
+<!-- Grafik Chart Bar --> 
 <div class="row">
     <div class="col-sm-6">
         <div class="box box-primary">
@@ -99,7 +100,7 @@ $this->title = 'Perpustakaan';
                         ],
                         'series' => [
                             [
-                                'type' => 'bar',
+                                'type' => 'column',
                                 'name' => 'Buku',
                                 'data' => Kategori::getGrafikList(),
                             ],
@@ -109,6 +110,7 @@ $this->title = 'Perpustakaan';
             </div>
            </div>
         </div>
+
         <div class="row">
             <div class="col-sm-6">
                 <div class="box box-primary">
@@ -128,7 +130,7 @@ $this->title = 'Perpustakaan';
                                 ],
                                 'series' => [
                                     [
-                                        'type' => 'line',
+                                        'type' => 'pie',
                                         'name' => 'Penulis',
                                         'data' => Penulis::getGrafikList(),
                                     ],
@@ -170,19 +172,39 @@ $this->title = 'Perpustakaan';
                         </div>
                     </div>
                 </div>
-            </div>
+            
 
-                <div class="site-index">
-
-                    <div class="row">
-                        <div class="col-lg-4">
-
-                        </div>
-                    </div>
-
+            <div class="col-sm-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Grafik Peminjaman Berdasarkan Buku</h3>
+                </div>
+                <div class="box-body">
+                    <?= \miloschuman\highcharts\Highcharts::widget([
+                    'options' => [
+                        'credits' => true,
+                        'title' => ['text' => 'PEMINJAMAN'],
+                        'exporting' => ['enabled' => true],
+                        'xAxis' => [
+                            'categories' => \app\components\Helper::getListBulanGrafik(),
+                        ],
+                        'series' => [
+                            [
+                                'type' => 'column',
+                                'colorByPoint' => true,
+                                'name' => 'Peminjaman',
+                                'data' => \app\models\Peminjaman::getCountGrafik(),
+                                'showInLegend' => false
+                            ],
+                        ],
+                    ]
+                ]) ?>
                 </div>
             </div>
         </div>
+        </div>
+        </div>
+
     <?php endif ?>
 
     <!-- Dashboard Anggota -->
@@ -190,7 +212,7 @@ $this->title = 'Perpustakaan';
 <?php $this->title = 'Perpustakaan'; ?>
 
 <div class="row">
-    <?php foreach (Buku::find()->all() as $buku) {?> 
+    <?php foreach ($provider->getModels() as $buku) {?> 
         <!-- Kolom box mulai -->
         <div class="col-md-4">
             <!-- Box mulai -->
@@ -210,10 +232,10 @@ $this->title = 'Perpustakaan';
                 </div>
 
                 <div class="box-body">
-                    <img class="img-responsive pad" src="<?= Yii::$app->request->baseUrl.'/upload/'.$buku['sampul']; ?>" alt="Photo">
+                    <img class="img-responsive pad" style="height: 300px;" src="<?= Yii::$app->request->baseUrl.'/upload/'.$buku['sampul']; ?>" alt="Photo">
                     <p>Sinopsis : <?= substr($buku->sinopsis,0,120);?> ...</p>
                     <?= Html::a("<i class='fa fa-eye'> Detail Buku</i>",["buku/view","id"=>$buku->id],['class' => 'btn btn-default']) ?>
-                    <?= Html::a('<i class="fa fa-file"> Pinjam Buku</i>', ['peminjaman/create', 'id' => $buku->id], [
+                    <?= Html::a('<i class="fa fa-file"> Pinjam Buku</i>', ['peminjaman/create', 'id_buku' => $buku->id], [
                         'class' => 'btn btn-primary',
                         'data' => [
                             'confirm' => 'Apa anda yakin ingin meminjam buku ini?',
@@ -232,57 +254,145 @@ $this->title = 'Perpustakaan';
         }
     ?>
 
-</div>
+    </div>
+    <!-- pagination atau menampilkan next 1, 2, 3 -->
+    <div class="row">
+        <center>
+            <?= LinkPager::widget([
+                'pagination' => $provider->pagination,
+            ]) ?>
+        </center>
+    </div>
 <?php endif ?>
 
 <!-- Dashboard Petugas -->
 <?php if (Yii::$app->user->identity->id_user_role == 3): ?>
 <?php $this->title = 'Perpustakaan'; ?>
 
+<!-- Grafik Chart Bar --> 
 <div class="row">
-
-    <?php foreach (Buku::find()->all() as $buku) {?> 
-        <!-- Kolom box mulai -->
-        <div class="col-md-4">
-
-            <!-- Box mulai -->
-            <div class="box box-widget">
-
-                <div class="box-header with-border">
-                    <div class="user-block">
-                        <img class="img-circle" src="<?= Yii::getAlias('@web').'/images/a.jpg'; ?>" alt="User Image">
-                        <span class="username"><?= Html::a($buku->nama, ['buku/view', 'id' => $buku->id]); ?></span>
-                        <span class="description"> Di Terbitkan : Tahun <?= $buku->tahun_terbit; ?></span>
-                    </div>
-                    <div class="box-tools">
-                        <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="Mark as read"><i class="fa fa-circle-o"></i></button>
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                    </div>
-                </div>
-
-                <div class="box-body">
-                    <img class="img-responsive pad" src="<?= Yii::$app->request->baseUrl.'/upload/'.$buku['sampul']; ?>" alt="Photo">
-                    <p>Sinopsis : <?= substr($buku->sinopsis,0,120);?> ...</p>
-                    <?= Html::a("<i class='fa fa-eye'> Detail Buku</i>",["buku/view","id"=>$buku->id],['class' => 'btn btn-default']) ?>
-                    <?= Html::a('<i class="fa fa-file"> Pinjam Buku</i>', ['#', 'id' => $buku->id], [
-                        'class' => 'btn btn-primary',
-                        'data' => [
-                            'confirm' => 'Apa anda yakin ingin meminjam buku ini?',
-                            'method' => 'post',
-                        ],
-                    ]) ?>
-                    <!-- <span class="pull-right text-muted">127 Peminjam - 3 Komentar</span> -->
-                </div>
-
+    <div class="col-sm-6">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Kategori Buku</h3>
             </div>
-            <!-- Box selesai -->
-
+            <div class="box-body">
+                <?=Highcharts::widget([
+                    'options' => [
+                        'credits' => false,
+                        'title' => ['text' => 'KATEGORI BUKU'],
+                        'exporting' => ['enabled' => true],
+                        'plotOptions' => [
+                            'pie' => [
+                                'cursor' => 'pointer',
+                            ],
+                        ],
+                        'series' => [
+                            [
+                                'type' => 'column',
+                                'name' => 'Buku',
+                                'data' => Kategori::getGrafikList(),
+                            ],
+                        ],
+                    ],
+                ]);?>
+            </div>
+           </div>
         </div>
-        <!-- Kolom box selesai -->  
-    <?php
-        }
-    ?>
 
-</div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Penulis Buku</h3>
+                    </div>
+                    <div class="box-body">
+                        <?=Highcharts::widget([
+                            'options' => [
+                                'credits' => false,
+                                'title' => ['text' => 'PENULIS BUKU'],
+                                'exporting' => ['enabled' => true],
+                                'plotOptions' => [
+                                    'pie' => [
+                                        'cursor' => 'pointer',
+                                    ],
+                                ],
+                                'series' => [
+                                    [
+                                        'type' => 'pie',
+                                        'name' => 'Penulis',
+                                        'data' => Penulis::getGrafikList(),
+                                    ],
+                                ],
+                            ],
+                        ]);?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+
+            <div class="row" style="margin-left: 0px;">
+                <div class="col-sm-6">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Penerbit Buku</h3>
+                        </div>
+                        <div class="box-body">
+                            <?=Highcharts::widget([
+                                'options' => [
+                                    'credits' => false,
+                                    'title' => ['text' => 'PENERBIT BUKU'],
+                                    'exporting' => ['enabled' => true],
+                                    'plotOptions' => [
+                                        'pie' => [
+                                            'cursor' => 'pointer',
+                                        ],
+                                    ],
+                                    'series' => [
+                                        [
+                                            'type' => 'pie',
+                                            'name' => 'Penerbit',
+                                            'data' => Penerbit::getGrafikList(),
+                                        ],
+                                    ],
+                                ],
+                            ]);?>
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="col-sm-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Grafik Peminjaman Berdasarkan Buku</h3>
+                </div>
+                <div class="box-body">
+                    <?= \miloschuman\highcharts\Highcharts::widget([
+                    'options' => [
+                        'credits' => true,
+                        'title' => ['text' => 'PEMINJAMAN'],
+                        'exporting' => ['enabled' => true],
+                        'xAxis' => [
+                            'categories' => \app\components\Helper::getListBulanGrafik(),
+                        ],
+                        'series' => [
+                            [
+                                'type' => 'column',
+                                'colorByPoint' => true,
+                                'name' => 'Peminjaman',
+                                'data' => \app\models\Peminjaman::getCountGrafik(),
+                                'showInLegend' => false
+                            ],
+                        ],
+                    ]
+                ]) ?>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+        
 <?php endif ?>
+

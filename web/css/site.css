@@ -110,6 +110,19 @@ a.desc:after {
     text-decoration: none;
 }
 
+.content-wrapper {
+   background: url('../images/test.png') !important;
+   /*background-size:100px;*/
+}
+
+.bgimg {
+   background: url("../images/bglogin.jpg") !important ;
+   height: 100%;
+   width: 100%;
+   /*background-size: 100px;*/
+   background-size:cover;
+}
+
 .nav > li > form > button.logout:focus {
     outline: none;
 }

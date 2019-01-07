@@ -2,7 +2,8 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
-
+use app\components\Helper;
+use app\models\Penulis;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\PenulisSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -18,6 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a('<i class="fa fa-plus"></i> Tambah Penulis', ['create'], ['class' => 'btn btn-success']) ?>
         <?= Html::a('<i class="fa fa-print"></i> Export word', ['penulis/penulis-word'], ['class' => 'btn btn-primary btn-flat']) ?>
+        <?= Html::a('<i class="fa fa-print"></i> Export Excel', Yii::$app->request->url.'&export=1', ['class' => 'btn btn-success btn-flat','target' => '_blank']) ?>
     </p>
     <div class="box-body">  
     <?= GridView::widget([
@@ -31,6 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
              [
                'attribute' =>'nama',
                'headerOptions' => ['style' => 'text-align:center;'],
+               'contentOptions' => ['style' => 'text-align:center'],
              ],
              //alamat
             [
@@ -46,6 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
            [
                'attribute' =>'email',
                'headerOptions' => ['style' => 'text-align:center; width: 100px'],
+               'contentOptions' => ['style' => 'text-align:center'],
            ],
 
             ['class' => 'yii\grid\ActionColumn'],

@@ -23,13 +23,13 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     
-        <?= Html::a('<i class="fa fa-plus"></i> Tambah Buku', ['create'], ['class' => 'btn btn-success']) ?>
+   <div class="box-body"> 
+    <?= Html::a('<i class="fa fa-plus"></i> Tambah Buku', ['create'], ['class' => 'btn btn-success']) ?>
         <?= Html::a('<i class="fa fa-print"></i> Export word', ['buku/jadwal-pl'], ['class' => 'btn btn-primary btn-flat']) ?>
         <?= Html::a('<i class="fa fa-print"></i> Export Excel', Yii::$app->request->url.'&export=1', ['class' => 'btn btn-success btn-flat','target' => '_blank']) ?>
         
          <?= Html::a('<i class="fa fa-print"></i> Export PDF', ['site/export-pdf'], ['class' => 'btn btn-danger']) ?>
-   
-   <div class="box-body"> 
+         
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -127,7 +127,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw',
                 'value' => function ($model) {
                     if ($model->berkas !='') {
-                        return '<a href="' . Yii::$app->homeUrl . '/upload/' . $model->berkas . '"><div align="center"><button class="btn btn-success glyphicon glyphicon-download-alt"></button></div></a>';
+                        return '<a href="' . Yii::$app->request->baseUrl . '/upload/' . $model->berkas . '"><div align="center"><button class="btn btn-success glyphicon glyphicon-download-alt"></button></div></a>';
                     } else {
                         return '<div align="center"><h1>No File</h1></div>';
                     }

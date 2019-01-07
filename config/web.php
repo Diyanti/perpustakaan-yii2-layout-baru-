@@ -11,6 +11,7 @@ $config = [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
+    //untuk template adminlte
     'components' => [
         'view' => [
              'theme' => [
@@ -19,6 +20,19 @@ $config = [
                  ],
              ],
         ],
+        //untuk mengirim email
+        'mail' => [
+         'class' => 'yii\swiftmailer\Mailer',
+         'useFileTransport' => false,
+         'transport' => [
+             'class' => 'Swift_SmtpTransport',
+             'host' => 'smtp.gmail.com',  
+             'username' => 'diyantiyan51@gmail.com',
+             'password' => 'Diyanti12',
+             'port' => '587', // Port 25 
+             'encryption' => 'tls', 
+         ],
+     ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => '2qkduRMvFXsQteE-5s6LMfNZgV7Uu2VE',

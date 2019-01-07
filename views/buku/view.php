@@ -10,7 +10,7 @@ use app\models\Penulis;
 /* @var $this yii\web\View */
 /* @var $model app\models\Buku */
 
-$this->title = $model->id;
+$this->title = $model->nama;
 $this->params['breadcrumbs'][] = ['label' => 'Bukus', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -48,6 +48,11 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'tahun_terbit',
                 'value' => $model->tahun_terbit
+
+            ],
+            [
+                'attribute' => 'harga',
+                'value' => ' Rp. '. $model->harga
 
             ],
                  // 'id_penulis',

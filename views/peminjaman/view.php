@@ -4,11 +4,12 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 use app\models\Anggota;
 use app\models\Buku;
+use app\models\Peminjaman;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Peminjaman */
 
-$this->title = $model->id;
+$this->title = $model->buku->nama;
 $this->params['breadcrumbs'][] = ['label' => 'Peminjamen', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -16,16 +17,20 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box-header">
     <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
 </div>
+    
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Are you sure you want to delete this item?',
                 'method' => 'post',
             ],
         ]) ?>
-    </p>
+       
+    </p>   
+    
+
     <div class="box-body">
     <?= DetailView::widget([
         'model' => $model,

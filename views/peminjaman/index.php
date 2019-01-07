@@ -74,7 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'tanggal_kembali',
            [
                'attribute' =>'tanggal_kembali',
-               'format' => 'date',
+               'format' => ['DateTime', 'php: Y / F / d-D'],
                'label' => 'Tanggal<br>Kembali',
                'encodeLabel' =>false,
                'headerOptions' => ['style' => 'text-align:center; width: 200px'],
@@ -86,25 +86,6 @@ $this->params['breadcrumbs'][] = $this->title;
     ]); ?>
 </div>
 </div>
-
-<?php 
-$pizza  = "piece1 piece2 piece3 piece4 piece5 piece6";
-$pieces = explode(" ", $pizza);
-echo $pieces[0]; // piece1
-echo $pieces[1]; // piece2
-echo $pieces[2]; // piece2
-echo $pieces[3]; // piece2
-echo $pieces[4]; // piece2
-echo $pieces[5]; // piece2
-?>
-
-<?php 
-  $hari = "Senin Selasa Rabu Kamis Jumat Sabtu Minggu";
-  $tanggal = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31";
-  $bulan = "Jan Feb Mar Apr Mei Jun Jul Agust Sept Okt Nov Des";
-  $pieces = explode(" ", $hari);
-  echo $pieces[2]; // piece1
-?>
 
 <!-- $data = "foo:*:1023:1000::/home/foo:/bin/sh";
 list($user, $pass, $uid, $gid, $gecos, $home, $shell) = explode(":", $data);
